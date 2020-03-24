@@ -10,8 +10,8 @@
     <ul>
       <li v-for="task in tasks" :key="task.id">
         {{task.id}} - {{task.name}}
-        <b-button class="btn-sm btn-warning">Editar</b-button>
-        <b-button class="btn-sm btn-danger">Eliminar</b-button>
+        <b-button class="btn-sm btn-warning" :to="`/vuex/${task.id}`">Editar</b-button>
+        <b-button class="btn-sm btn-danger" @click="deleteTask(task)">Eliminar</b-button>
       </li>
     </ul>
   </div>
@@ -30,7 +30,7 @@ export default {
     ...mapState(["tasks"])
   },
   methods: {
-    ...mapActions(["addTask"])
+    ...mapActions(["addTask", "deleteTask"])
   }
 };
 </script>

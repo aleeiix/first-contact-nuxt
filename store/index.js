@@ -1,7 +1,8 @@
 import { db } from "@/plugins/firebase";
 
 export const state = () => ({
-  tasks: null
+  tasks: null,
+  task: null
 });
 
 export const mutations = {
@@ -10,6 +11,16 @@ export const mutations = {
   },
   addTask(state, payload) {
     state.tasks.push(payload);
+  },
+  deleteTask(state, payload) {
+    state.tasks = state.tasks.filter(task => task.id !== payload.id);
+  },
+  updateTask(state, payload) {
+    const index = state.tasks.findIndex(task => task.id === payload.id);
+    state.tasks[index] = payload;
+  },
+  setTask(state, payload) {
+    state.task = payload;
   }
 };
 
@@ -40,5 +51,29 @@ export const actions = {
     } catch (error) {
       console.error(error);
     }
+  },
+  deleteTask({ commit }, payload) {
+    db.collection("tasks")
+      .doc(payload.id)
+      .delete()
+      .then(() => {
+        commit("deleteTask", payload);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
+  updateTask({ commit }, payload) {
+    console.log(payload);
+    db.collection("tasks")
+      .doc(payload.id)
+      .update(payload)
+      .then(() => {
+        commit("updateTask", payload);
+        this.app.router.push("/vuex");
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 };
